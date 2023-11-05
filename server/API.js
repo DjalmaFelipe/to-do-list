@@ -8,13 +8,19 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-connectToDb();
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); 
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+  res.send();
+});
+
+connectToDb();
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
@@ -51,15 +57,15 @@ app.post('/atividade', async (req, res) => {
   }
 })
 
-app.put('/uptade/:id', async (req, res) => {
+app.put('/update/:id', async (req, res) => {
   const atividadeId = req.params.id;
-  const { nome, status, data_inclusao } = req.body;
+  const { nome, status, data_finalizacao } = req.body;
 
   try {
     const atividade = await Atividade.findByIdAndUpdate(atividadeId, {
       nome,
       status,
-      data_inclusao
+      data_finalizacao
     }, { new: true });
 
     if (!atividade) {
@@ -73,22 +79,19 @@ app.put('/uptade/:id', async (req, res) => {
   }
 });
 
-
 app.delete('/delete/:id', async (req, res) => {
   const atividadeId = req.params.id;
 
   try {
-    const atividade = await Atividade.findById(atividadeId);
+    const result = await Atividade.deleteOne({ _id: atividadeId });
 
-    if (!atividade) {
+    if (result.deletedCount === 0) {
       return res.status(404).json({ message: 'Atividade não encontrada' });
     }
 
-    await atividade.remove();
     res.json({ message: 'Atividade deletada com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar a atividade:', error);
     res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
-

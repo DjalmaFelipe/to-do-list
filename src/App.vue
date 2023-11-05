@@ -1,32 +1,58 @@
 <template>
   <h1 class="display-1"> TO DO LIST </h1>
   <br>
-    <TesteGet></TesteGet>
-    <AdicionarAtividade></AdicionarAtividade>
+  <ManipulaAtividade :atividades="atividades"></ManipulaAtividade>
+  <AdicionarAtividade></AdicionarAtividade>
 </template>
 
 <script>
 
-import TesteGet from './components/TesteGet.vue';
+import ManipulaAtividade from './components/ManipulaAtividade.vue'
 import AdicionarAtividade from './components/AdicionarAtividade.vue';
+import axios from 'axios';
 
 export default {
   name: 'App',
   components: {
-    TesteGet,
+    ManipulaAtividade,
     AdicionarAtividade
-  }, data(){
+  }, data() {
     return {
-    
+      atividades: []
     }
   }
-}
+  ,
+  created() {
+    this.atualizarAtividades();
+  },
+  mounted() {
+    this.obterAtividades();
+  },
+  methods: {
+    obterAtividades() {
+      axios.get('http://localhost:3000/all')
+        .then((response) => {
+          this.atividades = response.data;
+        })
+        .catch((error) => {
+          console.error('Erro ao localizar os dados na API: ' + error);
+        });
+    },
+    atualizarAtividades() {
+      setInterval(() => {
+        this.obterAtividades();
+      }, 5000); //tempo para atualizar as atividades;
+    }
+  }
+};
+
 </script>
 
 <style>
 h1 {
   text-align: center;
 }
+
 body {
   background-color: black;
 }

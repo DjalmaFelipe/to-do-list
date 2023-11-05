@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import converteData from '../utils/converteData';
 import axios from 'axios';
 
 export default {
@@ -25,7 +26,7 @@ export default {
             const dados_da_atividade = {
                 nome: this.atividade,
                 status: false,
-                data_inclusao: '2023-10-29T17:37:23.649Z'
+                data_inclusao: converteData.dateToMongodb()
             }
 
             axios.post('http://localhost:3000/atividade', dados_da_atividade,
@@ -41,14 +42,13 @@ export default {
                     console.error(error);
                 });
 
-
-
         }
     }
 }
 </script>
 
 <style scoped>
+
 #botao {
     position: fixed;
     bottom: 15%;
