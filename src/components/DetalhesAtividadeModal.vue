@@ -40,9 +40,9 @@ export default {
 }
 
 .modal-content {
-  background-color: gray;
+  background-color: #faf0e6;
+  color: #352f44;
   padding: 20px;
-  border: 1px solid #888;
   max-width: 80%;
   max-height: 80%;
   overflow-y: auto;
